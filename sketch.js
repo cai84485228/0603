@@ -10,7 +10,7 @@ function preload() {
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
-let earXOffset = 0;
+let earXOffset = 0; // 初始化偏移量
 
 async function init() {
   const detectorConfig = {
@@ -51,6 +51,12 @@ async function setup() {
 function draw() {
   image(video, 0, 0);
   drawSkeleton();
+
+  // 更新 xOffset，使圖片從左往右移動
+  earXOffset += 2; // 每幀更新偏移量，速度為2
+  if (earXOffset > width) { // 如果圖片完全移出右邊界，重置到左邊界
+    earXOffset = -75; // 重置為圖片寬度的負值，讓其從左側開始
+  }
   
   // 水平翻轉圖像以達到鏡像效果
   cam = get();
@@ -82,20 +88,21 @@ function drawSkeleton() {
         line(partA.x, partA.y, partB.x, partB.y);
       }
     }
-    // 恢復肩膀之間的線條繪製
+
+    // shoulder to shoulder
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-      line(partA.x, partA.y, partB.x, partB.y); // 恢復肩膀之間的線條繪製
+      line(partA.x, partA.y, partB.x, partB.y); 
     }
 
-    // Hip to hip
+    // hip to hip
     partA = pose.keypoints[11];
     partB = pose.keypoints[12];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
     }
-    // Shoulders to hips
+    // shoulders to hips
     partA = pose.keypoints[5];
     partB = pose.keypoints[11];
     if (partA.score > 0.1 && partB.score > 0.1) {
@@ -106,7 +113,7 @@ function drawSkeleton() {
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
     }
-    // Hip to foot
+    // hip to foot
     for (j = 11; j < 15; j++) {
       if (pose.keypoints[j].score > 0.1 && pose.keypoints[j + 2].score > 0.1) {
         partA = pose.keypoints[j];
@@ -130,11 +137,6 @@ function drawSkeleton() {
       image(bikeImg, imgX - 37.5, partB.y - 37.5, 75, 75); // 右耳朵，圖片尺寸調整為75x75
       pop();
     }
-  }
-  // 更新耳朵位置的偏移量，使圖片從左往右移動
-  earXOffset += 2; // 每幀更新偏移量，速度為2
-  if (earXOffset > width) { // 如果圖片完全移出右邊界，重置偏移量
-    earXOffset = 0;
   }
 }
 
