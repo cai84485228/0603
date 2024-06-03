@@ -8,6 +8,9 @@ https://www.tensorflow.org/hub/tutorials/movenet
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
 
+function preload(){
+	bikeImg = loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif");
+}
 async function init() {
   const detectorConfig = {
     modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
@@ -57,6 +60,9 @@ function draw() {
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
+  ranslate(video.width,0)  //因為攝影機顯示的是反像的畫面，需要透過這兩條指令來做反轉
+		scale(-1,1)    //因為攝影機顯示的是反像的畫面，需要透過這兩條指令來做反轉
+    image(video, 0, 0); 
 }
 
 function drawSkeleton() {
@@ -87,10 +93,12 @@ function drawSkeleton() {
     }
     // shoulders to hips
     partA = pose.keypoints[5];
-    partB = pose.keypoints[11];
+    partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
-      
+    push()
+      image( ,pratA.x-75,partA.y-75,150,150)
+      image( ,pratB.x-75,partB.y-75,150,150)
     }
     partA = pose.keypoints[6];
     partB = pose.keypoints[12];
