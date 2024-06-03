@@ -10,7 +10,7 @@ function preload() {
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
-let xOffset;
+let earXOffset = 0;
 
 async function init() {
   const detectorConfig = {
@@ -46,25 +46,17 @@ async function setup() {
 
   stroke(255);
   strokeWeight(5);
-  
-  // 初始化 xOffset，從畫布左邊開始
-  xOffset = 0;
 }
 
 function draw() {
   image(video, 0, 0);
   drawSkeleton();
+  
   // 水平翻轉圖像以達到鏡像效果
   cam = get();
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
-
-  // 更新 xOffset，使圖片從左往右移動
-  xOffset += 2; // 每幀更新偏移量，速度為2
-  if (xOffset > width) { // 如果圖片完全移出右邊界，重置到左邊界
-    xOffset = -50;
-  }
 }
 
 function drawSkeleton() {
@@ -128,24 +120,21 @@ function drawSkeleton() {
     partB = pose.keypoints[4]; // 右耳
     if (partA.score > 0.1) {
       push();
-      // 計算圖片的 x 位置，使其從左往右移動
-      let imgX = xOffset + partA.x;
-      if (imgX > width) { // 如果圖片超出右邊界，重置到左邊界
-        imgX = xOffset + partA.x - width;
-      }
+      let imgX = partA.x + earXOffset;
       image(bikeImg, imgX - 37.5, partA.y - 37.5, 75, 75); // 左耳朵，圖片尺寸調整為75x75
       pop();
     }
     if (partB.score > 0.1) {
       push();
-      // 計算圖片的 x 位置，使其從左往右移動
-      let imgX = xOffset + partB.x;
-      if (imgX > width) { // 如果圖片超出右邊界，重置到左邊界
-        imgX = xOffset + partB.x - width;
-      }
+      let imgX = partB.x + earXOffset;
       image(bikeImg, imgX - 37.5, partB.y - 37.5, 75, 75); // 右耳朵，圖片尺寸調整為75x75
       pop();
     }
+  }
+  // 更新耳朵位置的偏移量，使圖片從左往右移動
+  earXOffset += 2; // 每幀更新偏移量，速度為2
+  if (earXOffset > width) { // 如果圖片完全移出右邊界，重置偏移量
+    earXOffset = 0;
   }
 }
 
