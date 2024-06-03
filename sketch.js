@@ -8,6 +8,9 @@ https://www.tensorflow.org/hub/tutorials/movenet
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
 
+function preload(){
+	mountainImg = loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif");
+}
 async function init() {
   const detectorConfig = {
     modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
@@ -45,6 +48,8 @@ async function setup() {
 }
 
 function draw() {
+  imageMode(ENTER)
+	
   image(video, 0, 0);
   drawSkeleton();
   // flip horizontal
