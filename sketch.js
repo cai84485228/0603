@@ -81,16 +81,11 @@ function drawSkeleton() {
         line(partA.x, partA.y, partB.x, partB.y);
       }
     }
-    // shoulder to shoulder
+     // shoulder to shoulder
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-        //line(partA.x, partA.y, partB.x, partB.y);
-    push()
-      image(bikeImg,partA.x-75, partA.y-75,150,150)  //左邊肩膀
-      image(bikeImg,partB.x-75, partB.y-75,150,150)  //右邊肩膀
-    pop()
-    }
+      line(partA.x, partA.y, partB.x, partB.y);
     // hip to hip
     partA = pose.keypoints[11];
     partB = pose.keypoints[12];
