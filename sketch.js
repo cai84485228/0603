@@ -50,19 +50,11 @@ async function setup() {
 function draw() {
   image(video, 0, 0);
   drawSkeleton();
-  // 显示文字
-  fill(255);
-  textSize(20);
-  textAlign(CENTER, BOTTOM);
-  text('412731043 蔡涵霈', width / 2, 50);
   // flip horizontal
   cam = get();
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
-  ranslate(video.width,0)  //因為攝影機顯示的是反像的畫面，需要透過這兩條指令來做反轉
-		scale(-1,1)    //因為攝影機顯示的是反像的畫面，需要透過這兩條指令來做反轉
-    image(video, 0, 0); 
 }
 
 function drawSkeleton() {
@@ -81,10 +73,10 @@ function drawSkeleton() {
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-     // line(partA.x, partA.y, partB.x, partB.y);
-push()
-      image( ,pratA.x-75,partA.y-75,150,150)
-      image( ,pratB.x-75,partB.y-75,150,150)
+      line(partA.x, partA.y, partB.x, partB.y);
+    push()
+      image( bikeImg,pratA.x-75,partA.y-75,150,150)
+      image( bikeImg,pratB.x-75,partB.y-75,150,150)
 pop()
     }
     // hip to hip
@@ -99,7 +91,7 @@ pop()
     partB = pose.keypoints[11];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
-    
+      
     }
     partA = pose.keypoints[6];
     partB = pose.keypoints[12];
