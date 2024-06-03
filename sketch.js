@@ -2,15 +2,15 @@
 
 MoveNet is developed by TensorFlow:
 https://www.tensorflow.org/hub/tutorials/movenet
-
 */
 
-function preload(){ 
-  bikeImg= loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif")  
+function preload() { 
+  bikeImg = loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif");  
 }
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
+let xOffset;
 
 async function init() {
   const detectorConfig = {
@@ -46,16 +46,24 @@ async function setup() {
 
   stroke(255);
   strokeWeight(5);
+  
+  xOffset = width; // 初始偏移位置在右邊
 }
 
 function draw() {
   image(video, 0, 0);
   drawSkeleton();
-  // flip horizontal
+  // Flip the image horizontally for a mirrored effect
   cam = get();
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
+
+  
+  xOffset -= 2; //每次更新偏移量，速度為2
+  if (xOffset < -150) { // 如果圖片完全離開左邊界，則重設到右邊界
+    xOffset = width;
+  }
 }
 
 function drawSkeleton() {
@@ -81,32 +89,31 @@ function drawSkeleton() {
         line(partA.x, partA.y, partB.x, partB.y);
       }
     }
-     // shoulder to shoulder
+    //shoulders to shoulders
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-      line(partA.x, partA.y, partB.x, partB.y);
-    // hip to hip
+      line(partA.x, partA.y, partB.x, partB.y); 
+    }
+
+    // Hip to hip
     partA = pose.keypoints[11];
     partB = pose.keypoints[12];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
     }
-    }
-    // shoulders to hips
+    // Shoulders to hips
     partA = pose.keypoints[5];
     partB = pose.keypoints[11];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
-      
     }
     partA = pose.keypoints[6];
     partB = pose.keypoints[12];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
-      
     }
-    // hip to foot
+    // Hip to foot
     for (j = 11; j < 15; j++) {
       if (pose.keypoints[j].score > 0.1 && pose.keypoints[j + 2].score > 0.1) {
         partA = pose.keypoints[j];
@@ -114,18 +121,33 @@ function drawSkeleton() {
         line(partA.x, partA.y, partB.x, partB.y);
       }
     }
-    // add bike image to ears
-    partA = pose.keypoints[3]; // left ear
-    partB = pose.keypoints[4]; // right ear
+
+    // Step 2: Add bike image to ears
+    partA = pose.keypoints[3]; // Left ear
+    partB = pose.keypoints[4]; // Right ear
     if (partA.score > 0.1) {
-      push()
-      image(bikeImg, partA.x - 75, partA.y - 75, 150, 150); //左耳朵
-      pop()
+      push();
+      image(bikeImg, partA.x - 75, partA.y - 75, 150, 150); // 左耳朵
+      pop();
     }
     if (partB.score > 0.1) {
-      push()
-      image(bikeImg, partB.x - 75, partB.y - 75, 150, 150); //右耳朵
-      pop()
+      push();
+      image(bikeImg, partB.x - 75, partB.y - 75, 150, 150); // 右耳朵
+      pop();
+    }
+
+    // Step 2: Add bike image to wrists and move from right to left
+    partA = pose.keypoints[9]; // Left wrist
+    partB = pose.keypoints[10]; // Right wrist
+    if (partA.score > 0.1) {
+      push();
+      image(bikeImg, xOffset, partA.y - 75, 150, 150); // 左手腕
+      pop();
+    }
+    if (partB.score > 0.1) {
+      push();
+      image(bikeImg, xOffset, partB.y - 75, 150, 150); // 右手腕
+      pop();
     }
   }
 }
@@ -144,8 +166,8 @@ function drawSkeleton() {
   10 right wrist
   11 left hip
   12 right hip
-  13 left kneee
+  13 left knee
   14 right knee
   15 left foot
   16 right foot
-  */
+*/
