@@ -47,7 +47,8 @@ async function setup() {
   stroke(255);
   strokeWeight(5);
   
-  xOffset = width; // 初始偏移位置在右邊
+  // Step 2: Initialize xOffset to 0 (start from the left edge)
+  xOffset = -150; // 初始偏移位置在左边
 }
 
 function draw() {
@@ -59,10 +60,10 @@ function draw() {
   scale(-1, 1);
   image(cam, 0, 0);
 
-  
-  xOffset -= 2; //每次更新偏移量，速度為2
-  if (xOffset < -150) { // 如果圖片完全離開左邊界，則重設到右邊界
-    xOffset = width;
+  // Step 2: Update xOffset to move the image from left to right
+  xOffset += 2; // 每次更新偏移量，速度为2
+  if (xOffset > width) { // 如果图片完全离开右边界，则重置到左边界
+    xOffset = -150;
   }
 }
 
@@ -89,11 +90,11 @@ function drawSkeleton() {
         line(partA.x, partA.y, partB.x, partB.y);
       }
     }
-    //shoulders to shoulders
+    // Step 1: Restore drawing lines between shoulders
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-      line(partA.x, partA.y, partB.x, partB.y); 
+      line(partA.x, partA.y, partB.x, partB.y); // 恢复肩膀之间的线条绘制
     }
 
     // Hip to hip
@@ -122,31 +123,31 @@ function drawSkeleton() {
       }
     }
 
-    // Step 2: Add bike image to ears
+    // Step 1: Add bike image to ears
     partA = pose.keypoints[3]; // Left ear
     partB = pose.keypoints[4]; // Right ear
     if (partA.score > 0.1) {
       push();
-      image(bikeImg, partA.x - 75, partA.y - 75, 150, 150); // 左耳朵
+      image(bikeImg, xOffset, partA.y - 75, 150, 150); // 左耳朵
       pop();
     }
     if (partB.score > 0.1) {
       push();
-      image(bikeImg, partB.x - 75, partB.y - 75, 150, 150); // 右耳朵
+      image(bikeImg, xOffset, partB.y - 75, 150, 150); // 右耳朵
       pop();
     }
 
-    // Step 2: Add bike image to wrists and move from right to left
+    // Add bike image to wrists
     partA = pose.keypoints[9]; // Left wrist
     partB = pose.keypoints[10]; // Right wrist
     if (partA.score > 0.1) {
       push();
-      image(bikeImg, xOffset, partA.y - 75, 150, 150); // 左手腕
+      image(bikeImg, partA.x - 75, partA.y - 75, 150, 150); // 左手腕
       pop();
     }
     if (partB.score > 0.1) {
       push();
-      image(bikeImg, xOffset, partB.y - 75, 150, 150); // 右手腕
+      image(bikeImg, partB.x - 75, partB.y - 75, 150, 150); // 右手腕
       pop();
     }
   }
