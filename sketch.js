@@ -4,11 +4,14 @@ MoveNet is developed by TensorFlow:
 https://www.tensorflow.org/hub/tutorials/movenet
 
 */
-function preload(){
-	bikeImg = loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif");
+
+function preload(){ 
+  bikeImg= loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif")  
 }
+
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
+
 
 
 
@@ -56,6 +59,7 @@ function draw() {
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
+  
 }
 
 function drawSkeleton() {
@@ -63,32 +67,35 @@ function drawSkeleton() {
   for (let i = 0; i < poses.length; i++) {
     pose = poses[i];
     // shoulder to wrist
-    partA = pose.keypoints[0]
+
+    partA = pose.keypoints[0];
+
+    if(partA.score > 0.1){
+      push()
+        textSize(40)
+        scale(-1,1)
+        text("412730201,陳妍希",partA.x-width,partA.y-150)
+      pop()
+    }
     
-      if (partA.score >0.1){
-push()
-    textSize(40)
-    scale(-1,1)
-    text("412731043 蔡涵霈",partA.x-width,partA.y-150)
-pop()
+    for (j = 5; j < 9; j++) {
+      if (pose.keypoints[j].score > 0.1 && pose.keypoints[j + 2].score > 0.1) {
+        partA = pose.keypoints[j];
+        partB = pose.keypoints[j + 2];
+        line(partA.x, partA.y, partB.x, partB.y);
       }
-for(j = 5;j<9;j++){
-  if(pose.keypoints[j].score >0.1 && pose.keypoints[j +2].score >0.1){
-  pratA = pose.keypoints[j];
-  partB = pose.keypoints[j + 2];
-  line(partA.x,partA.y,partB.x,partB.y);
-  }
-}
     }
     // shoulder to shoulder
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-      //line(partA.x, partA.y, partB.x, partB.y);
+        //line(partA.x, partA.y, partB.x, partB.y);
     push()
-      image( bikeImg,pratA.x-75,partA.y-75,150,150)
-      image( bikeImg,pratB.x-75,partB.y-75,150,150)
-pop()
+      image(carImg,partA.x-75, partA.y-75,150,150)  //左邊肩膀
+      image(carImg,partB.x-75, partB.y-75,150,150)  //右邊肩膀
+    pop()
+      
+      
     }
     // hip to hip
     partA = pose.keypoints[11];
@@ -120,6 +127,7 @@ pop()
       }
     }
   }
+}
 
 /* Points (view on left of screen = left part - when mirrored)
   0 nose
