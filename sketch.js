@@ -7,6 +7,7 @@ https://www.tensorflow.org/hub/tutorials/movenet
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
+let bikeImg
 
 function preload(){
 	bikeImg = loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif");
@@ -62,18 +63,28 @@ function drawSkeleton() {
   for (let i = 0; i < poses.length; i++) {
     pose = poses[i];
     // shoulder to wrist
-    for (j = 5; j < 9; j++) {
-      if (pose.keypoints[j].score > 0.1 && pose.keypoints[j + 2].score > 0.1) {
-        partA = pose.keypoints[j];
-        partB = pose.keypoints[j + 2];
-        line(partA.x, partA.y, partB.x, partB.y);
+    partA = pose.keypoints[0]
+    
+      if (partA.score >0.1){
+push()
+    textSize(40)
+    scale(-1,1)
+    text("412731043 蔡涵霈",partA.x-width,partA.y-150)
+pop()
       }
+for(j = 5;j<9;j++){
+  if(pose.keypoints[j].score >0.1 && pose.keypoints[j +2].score >0.1){
+  pratA = pose.keypoints[j];
+  partB = pose.keypoints[j + 2];
+  line(partA.x,partA.y,partB.x,partB.y);
+  }
+}
     }
     // shoulder to shoulder
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-      line(partA.x, partA.y, partB.x, partB.y);
+      //line(partA.x, partA.y, partB.x, partB.y);
     push()
       image( bikeImg,pratA.x-75,partA.y-75,150,150)
       image( bikeImg,pratB.x-75,partB.y-75,150,150)
@@ -109,7 +120,6 @@ pop()
       }
     }
   }
-}
 
 /* Points (view on left of screen = left part - when mirrored)
   0 nose
