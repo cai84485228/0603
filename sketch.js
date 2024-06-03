@@ -95,7 +95,7 @@ function drawSkeleton() {
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-      line(partA.x, partA.y, partB.x, partB.y);
+      //line(partA.x, partA.y, partB.x, partB.y);
     push()
       image( ,pratA.x-75,partA.y-75,150,150)
       image( ,pratB.x-75,partB.y-75,150,150)
