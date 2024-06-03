@@ -10,7 +10,8 @@ function preload() {
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
-let earXOffset = 0; // 初始化偏移量
+let earXOffset = 0; // 初始化左耳偏移量
+let wristXOffset = 0; // 初始化手腕偏移量
 
 async function init() {
   const detectorConfig = {
@@ -46,16 +47,24 @@ async function setup() {
 
   stroke(255);
   strokeWeight(5);
+
+  // 设置初始左耳和手腕偏移量
+  // earXOffset = 初始值;
+  // wristXOffset = 初始值;
 }
 
 function draw() {
   image(video, 0, 0);
   drawSkeleton();
 
-  // 更新 xOffset，使圖片從左往右移動
-  earXOffset += 2; // 每幀更新偏移量，速度為2
+  // 更新偏移量，使圖片從右往左移動
+  earXOffset += 2; // 每幀更新左耳偏移量，速度為2
+  wristXOffset -= 2; // 每幀更新手腕偏移量，速度為2
   if (earXOffset > width) { // 如果圖片完全移出右邊界，重置到左邊界
     earXOffset = -75; // 重置為圖片寬度的負值，讓其從左側開始
+  }
+  if (wristXOffset < -75) { // 如果圖片完全移出左邊界，重置到右邊界
+    wristXOffset = width; // 重置為畫布寬度，讓其從右側開始
   }
   
   // 水平翻轉圖像以達到鏡像效果
@@ -137,25 +146,14 @@ function drawSkeleton() {
       image(bikeImg, imgX - 37.5, partB.y - 20, 75, 75); 
       pop();
     }
-  }
-}
 
-/* Points (view on left of screen = left part - when mirrored)
-  0 nose
-  1 left eye
-  2 right eye
-  3 left ear
-  4 right ear
-  5 left shoulder
-  6 right shoulder
-  7 left elbow
-  8 right elbow
-  9 left wrist
-  10 right wrist
-  11 left hip
-  12 right hip
-  13 left knee
-  14 right knee
-  15 left foot
-  16 right foot
-*/
+    // 在手腕位置添加 bike 圖片並從右向左移動
+    partA = pose.keypoints[9]; // 左手腕
+    partB = pose.keypoints[10]; // 右手腕
+    if (partA.score > 0.1) {
+      push();
+      let imgX = partA.x + wristXOffset;
+      image(bikeImg）；
+      pop（）
+    }
+  
