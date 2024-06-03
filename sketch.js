@@ -128,13 +128,13 @@ function drawSkeleton() {
     if (partA.score > 0.1) {
       push();
       let imgX = partA.x + earXOffset;
-      image(bikeImg, imgX - 37.5, partA.y - 50, 75, 75); 
+      image(bikeImg, imgX - 37.5, partA.y - 20, 75, 75); 
       pop();
     }
     if (partB.score > 0.1) {
       push();
       let imgX = partB.x + earXOffset;
-      image(bikeImg, imgX - 37.5, partB.y - 50, 75, 75); 
+      image(bikeImg, imgX - 37.5, partB.y - 20, 75, 75); 
       pop();
     }
   }
