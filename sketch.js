@@ -66,7 +66,7 @@ function draw() {
 }
 
 function drawSkeleton() {
-  // 繪製所有被追蹤的關鍵點
+  
   for (let i = 0; i < poses.length; i++) {
     pose = poses[i];
     // shoulder to wrist
@@ -123,18 +123,18 @@ function drawSkeleton() {
     }
 
     // 在耳朵位置添加 bike 圖片並從左向右移動
-    partA = pose.keypoints[3]; // 左耳
-    partB = pose.keypoints[4]; // 右耳
+     partA = pose.keypoints[3]; // 左耳
+     partB = pose.keypoints[4]; // 右耳
     if (partA.score > 0.1) {
       push();
       let imgX = partA.x + earXOffset;
-      image(bikeImg, imgX - 37.5, partA.y - 37.5, 75, 75); // 左耳朵，圖片尺寸調整為75x75
+      image(bikeImg, imgX - 37.5, partA.y - 50, 75, 75); 
       pop();
     }
     if (partB.score > 0.1) {
       push();
       let imgX = partB.x + earXOffset;
-      image(bikeImg, imgX - 37.5, partB.y - 37.5, 75, 75); // 右耳朵，圖片尺寸調整為75x75
+      image(bikeImg, imgX - 37.5, partB.y - 50, 75, 75); 
       pop();
     }
   }
