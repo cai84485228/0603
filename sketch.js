@@ -7,7 +7,6 @@ https://www.tensorflow.org/hub/tutorials/movenet
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
-let img; // 用于存储加载的图像
 
 async function init() {
   const detectorConfig = {
@@ -34,11 +33,6 @@ async function getPoses() {
   requestAnimationFrame(getPoses);
 }
 
-function preload() {
-  // 预加载图像
-  img = loadImage('upload_7dd6374659c38a191c0e3eb86f1d75c5.gif');
-}
-
 async function setup() {
   createCanvas(640, 480);
   video = createCapture(VIDEO, videoReady);
@@ -53,10 +47,6 @@ async function setup() {
 function draw() {
   image(video, 0, 0);
   drawSkeleton();
-  // 显示加载的图像
-  if (img) {
-    image(img, 0, 0, 640, 480);
-  }
   // flip horizontal
   cam = get();
   translate(cam.width, 0);
