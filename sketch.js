@@ -91,7 +91,7 @@ function drawSkeleton() {
     partB = pose.keypoints[12];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
-      
+    }
     }
     // shoulders to hips
     partA = pose.keypoints[5];
@@ -148,4 +148,4 @@ function drawSkeleton() {
   14 right knee
   15 left foot
   16 right foot
-*/
+  */
