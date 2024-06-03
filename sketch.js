@@ -7,7 +7,7 @@ https://www.tensorflow.org/hub/tutorials/movenet
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
-let img; // 用于存储加载的图像
+let img = oadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif"); // 用于存储加载的图像
 
 async function init() {
   const detectorConfig = {
