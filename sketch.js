@@ -12,9 +12,6 @@ function preload(){
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
 
-
-
-
 async function init() {
   const detectorConfig = {
     modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
@@ -59,7 +56,6 @@ function draw() {
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
-  
 }
 
 function drawSkeleton() {
@@ -94,8 +90,6 @@ function drawSkeleton() {
       image(bikeImg,partA.x-75, partA.y-75,150,150)  //左邊肩膀
       image(bikeImg,partB.x-75, partB.y-75,150,150)  //右邊肩膀
     pop()
-      
-      
     }
     // hip to hip
     partA = pose.keypoints[11];
@@ -123,8 +117,20 @@ function drawSkeleton() {
         partA = pose.keypoints[j];
         partB = pose.keypoints[j + 2];
         line(partA.x, partA.y, partB.x, partB.y);
-        
       }
+    }
+    // add bike image to ears
+    partA = pose.keypoints[3]; // left ear
+    partB = pose.keypoints[4]; // right ear
+    if (partA.score > 0.1) {
+      push()
+      image(bikeImg, partA.x - 75, partA.y - 75, 150, 150); //左耳朵
+      pop()
+    }
+    if (partB.score > 0.1) {
+      push()
+      image(bikeImg, partB.x - 75, partB.y - 75, 150, 150); //右耳朵
+      pop()
     }
   }
 }
