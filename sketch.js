@@ -2,16 +2,16 @@
 
 MoveNet is developed by TensorFlow:
 https://www.tensorflow.org/hub/tutorials/movenet
+
 */
 
-function preload() { 
-  bikeImg = loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif");  
+function preload(){ 
+  bikeImg= loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif")  
 }
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
-let earXOffset = 0; // 初始化左耳偏移量
-let wristXOffset = 0; // 初始化手腕偏移量
+let xOffset;
 
 async function init() {
   const detectorConfig = {
@@ -47,35 +47,28 @@ async function setup() {
 
   stroke(255);
   strokeWeight(5);
-
-  // 设置初始左耳和手腕偏移量
-  // earXOffset = 初始值;
-  // wristXOffset = 初始值;
+  
+  xOffset = width; // 初始偏移位置在右边
 }
 
 function draw() {
   image(video, 0, 0);
   drawSkeleton();
-
-  // 更新偏移量，使圖片從右往左移動
-  earXOffset += 2; // 每幀更新左耳偏移量，速度為2
-  wristXOffset -= 2; // 每幀更新手腕偏移量，速度為2
-  if (earXOffset > width) { // 如果圖片完全移出右邊界，重置到左邊界
-    earXOffset = -75; // 重置為圖片寬度的負值，讓其從左側開始
-  }
-  if (wristXOffset < -75) { // 如果圖片完全移出左邊界，重置到右邊界
-    wristXOffset = width; // 重置為畫布寬度，讓其從右側開始
-  }
-  
-  // 水平翻轉圖像以達到鏡像效果
+  // flip horizontal
   cam = get();
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
+
+  // 更新 xOffset，使图片从右向左移动
+  xOffset -= 2; // 每次更新偏移量，速度为2
+  if (xOffset < -150) { // 如果图片完全离开左边界，则重置到右边界
+    xOffset = width;
+  }
 }
 
 function drawSkeleton() {
-  
+  // Draw all the tracked landmark points
   for (let i = 0; i < poses.length; i++) {
     pose = poses[i];
     // shoulder to wrist
@@ -97,30 +90,31 @@ function drawSkeleton() {
         line(partA.x, partA.y, partB.x, partB.y);
       }
     }
-
     // shoulder to shoulder
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-      line(partA.x, partA.y, partB.x, partB.y); 
+        line(partA.x, partA.y, partB.x, partB.y);
     }
-
     // hip to hip
     partA = pose.keypoints[11];
     partB = pose.keypoints[12];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
+      
     }
     // shoulders to hips
     partA = pose.keypoints[5];
     partB = pose.keypoints[11];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
+      
     }
     partA = pose.keypoints[6];
     partB = pose.keypoints[12];
     if (partA.score > 0.1 && partB.score > 0.1) {
       line(partA.x, partA.y, partB.x, partB.y);
+      
     }
     // hip to foot
     for (j = 11; j < 15; j++) {
@@ -130,27 +124,19 @@ function drawSkeleton() {
         line(partA.x, partA.y, partB.x, partB.y);
       }
     }
-
-    // 在耳朵位置添加 bike 圖片並從左向右移動
-     partA = pose.keypoints[3]; // 左耳
-     partB = pose.keypoints[4]; // 右耳
+    // add bike image to ears
+    partA = pose.keypoints[3]; // left ear
+    partB = pose.keypoints[4]; // right ear
     if (partA.score > 0.1) {
-      push();
-      let imgX = partA.x + earXOffset;
-      image(bikeImg, imgX - 37.5, partA.y - 20, 75, 75); 
-      pop();
+      push()
+      image(bikeImg, partA.x - 75, partA.y - 75, 150, 150); //左耳朵
+      pop()
     }
     if (partB.score > 0.1) {
-      push();
-      let imgX = partB.x + earXOffset;
-      image(bikeImg, imgX - 37.5, partB.y - 20, 75, 75); 
-      pop();
+      push()
+      image(bikeImg, partB.x - 75, partB.y - 75, 150, 150); //右耳朵
+      pop()
     }
-
-    // 在手腕位置添加 bike 圖片並從右向左移動
-    for (let i = 0; i < poses.length; i++) {
-    pose = poses[i];
-    
     // add bike image to wrists and move from right to left
     partA = pose.keypoints[9]; // left wrist
     partB = pose.keypoints[10]; // right wrist
@@ -166,3 +152,23 @@ function drawSkeleton() {
     }
   }
 }
+
+/* Points (view on left of screen = left part - when mirrored)
+  0 nose
+  1 left eye
+  2 right eye
+  3 left ear
+  4 right ear
+  5 left shoulder
+  6 right shoulder
+  7 left elbow
+  8 right elbow
+  9 left wrist
+  10 right wrist
+  11 left hip
+  12 right hip
+  13 left kneee
+  14 right knee
+  15 left foot
+  16 right foot
+*/
