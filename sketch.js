@@ -151,19 +151,18 @@ function drawSkeleton() {
     for (let i = 0; i < poses.length; i++) {
     pose = poses[i];
     
-    // 在手腕位置添加 bike 图片并从右向左移动
-    partA = pose.keypoints[9]; // 左手腕
-    partB = pose.keypoints[10]; // 右手腕
+    // add bike image to wrists and move from right to left
+    partA = pose.keypoints[9]; // left wrist
+    partB = pose.keypoints[10]; // right wrist
     if (partA.score > 0.1) {
-      push();
-      let imgX = partA.x + wristXOffset;
-      image(bikeImg, imgX - 37.5, partA.y - 20, 75, 75); 
-      pop();
+      push()
+      image(bikeImg, xOffset, partA.y - 75, 150, 150); //左手腕
+      pop()
     }
     if (partB.score > 0.1) {
-      push();
-      let imgX = partB.x + wristXOffset;
-      image(bikeImg, imgX - 37.5, partB.y - 20, 75, 75); 
-      pop();
+      push()
+      image(bikeImg, xOffset, partB.y - 75, 150, 150); //右手腕
+      pop()
     }
   }
+}
