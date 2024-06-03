@@ -7,10 +7,7 @@ https://www.tensorflow.org/hub/tutorials/movenet
 
 let video, bodypose, pose, keypoint, detector;
 let poses = [];
-let mountainImg
-function preload(){
-	mountainImg = loadImage("upload_7dd6374659c38a191c0e3eb86f1d75c5.gif");
-}
+
 async function init() {
   const detectorConfig = {
     modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
@@ -48,30 +45,32 @@ async function setup() {
 }
 
 function draw() {
-  imageMode(ENTER)
-	
   image(video, 0, 0);
   drawSkeleton();
+  // 显示文字
+  fill(255);
+  textSize(20);
+  textAlign(CENTER, BOTTOM);
+  text('412731043 蔡涵霈', width / 2, 50);
   // flip horizontal
   cam = get();
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
- text("412731043 蔡涵霈")
 }
 
 function drawSkeleton() {
   // Draw all the tracked landmark points
- // for (let i = 0; i < poses.length; i++) {
-    //pose = poses[i];
+  for (let i = 0; i < poses.length; i++) {
+    pose = poses[i];
     // shoulder to wrist
-    // for (j = 5; j < 9; j++) {
-    //   if (pose.keypoints[j].score > 0.1 && pose.keypoints[j + 2].score > 0.1) {
-    //     partA = pose.keypoints[j];
-    //     partB = pose.keypoints[j + 2];
-    //     line(partA.x, partA.y, partB.x, partB.y);
-    //   }
-    // }
+    for (j = 5; j < 9; j++) {
+      if (pose.keypoints[j].score > 0.1 && pose.keypoints[j + 2].score > 0.1) {
+        partA = pose.keypoints[j];
+        partB = pose.keypoints[j + 2];
+        line(partA.x, partA.y, partB.x, partB.y);
+      }
+    }
     // shoulder to shoulder
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
