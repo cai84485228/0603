@@ -47,28 +47,28 @@ async function setup() {
   stroke(255);
   strokeWeight(5);
   
-  // Step 2: Initialize xOffset to 0 (start from the left edge)
-  xOffset = -150; // 初始偏移位置在左边
+  // 步驟2: 初始化 xOffset，從畫布左邊開始
+  xOffset = 0;
 }
 
 function draw() {
   image(video, 0, 0);
   drawSkeleton();
-  // Flip the image horizontally for a mirrored effect
+  // 水平翻轉圖像以達到鏡像效果
   cam = get();
   translate(cam.width, 0);
   scale(-1, 1);
   image(cam, 0, 0);
 
-  // Step 2: Update xOffset to move the image from left to right
-  xOffset += 2; // 每次更新偏移量，速度为2
-  if (xOffset > width) { // 如果图片完全离开右边界，则重置到左边界
-    xOffset = -150;
+  // 步驟2: 更新 xOffset，使圖片從左往右移動
+  xOffset += 2; // 每幀更新偏移量，速度為2
+  if (xOffset > width) { // 如果圖片完全移出右邊界，重置到左邊界
+    xOffset = -50;
   }
 }
 
 function drawSkeleton() {
-  // Draw all the tracked landmark points
+  // 繪製所有被追蹤的關鍵點
   for (let i = 0; i < poses.length; i++) {
     pose = poses[i];
     // shoulder to wrist
@@ -90,11 +90,11 @@ function drawSkeleton() {
         line(partA.x, partA.y, partB.x, partB.y);
       }
     }
-    // Step 1: Restore drawing lines between shoulders
+    // 步驟1: 恢復肩膀之間的線條繪製
     partA = pose.keypoints[5];
     partB = pose.keypoints[6];
     if (partA.score > 0.1 && partB.score > 0.1) {
-      line(partA.x, partA.y, partB.x, partB.y); // 恢复肩膀之间的线条绘制
+      line(partA.x, partA.y, partB.x, partB.y); // 恢復肩膀之間的線條繪製
     }
 
     // Hip to hip
@@ -123,31 +123,17 @@ function drawSkeleton() {
       }
     }
 
-    // Step 1: Add bike image to ears
-    partA = pose.keypoints[3]; // Left ear
-    partB = pose.keypoints[4]; // Right ear
+    // 步驟1: 在耳朵位置添加 bike 圖片並從左向右移動
+    partA = pose.keypoints[3]; // 左耳
+    partB = pose.keypoints[4]; // 右耳
     if (partA.score > 0.1) {
       push();
-      image(bikeImg, xOffset, partA.y - 75, 150, 150); // 左耳朵
+      image(bikeImg, xOffset, partA.y - 37.5, 75, 75); // 左耳朵，圖片尺寸調整為75x75
       pop();
     }
     if (partB.score > 0.1) {
       push();
-      image(bikeImg, xOffset, partB.y - 75, 150, 150); // 右耳朵
-      pop();
-    }
-
-    // Add bike image to wrists
-    partA = pose.keypoints[9]; // Left wrist
-    partB = pose.keypoints[10]; // Right wrist
-    if (partA.score > 0.1) {
-      push();
-      image(bikeImg, partA.x - 75, partA.y - 75, 150, 150); // 左手腕
-      pop();
-    }
-    if (partB.score > 0.1) {
-      push();
-      image(bikeImg, partB.x - 75, partB.y - 75, 150, 150); // 右手腕
+      image(bikeImg, xOffset, partB.y - 37.5, 75, 75); // 右耳朵，圖片尺寸調整為75x75
       pop();
     }
   }
